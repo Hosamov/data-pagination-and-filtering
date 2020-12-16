@@ -1,71 +1,41 @@
 /*
 Treehouse Techdegree:
 FSJS Project 2 - Data Pagination and Filtering
+By: Matt Coale
 */
 
-/*
-For assistance:
-   Check out the "Project Resources" section of the Instructions tab: https://teamtreehouse.com/projects/data-pagination-and-filtering#instructions
-   Reach out in your Slack community: https://treehouse-fsjs-102.slack.com/app_redirect?channel=unit-2
-*/
+//Declare global variables
 const studentList = document.querySelector('.student-list');
-const itemsPerPage = 9; //Set how many items to be shown per page
+const linkList = document.querySelector('.link-list');
+const itemsPerPage = 9; //Define max students to be shown per page
+
 /*
 Create the `showPage` function
 This function will create and insert/append the elements needed to display a "page" of nine students
 */
 function showPage(list, page) {
-  const startIndex = (page * itemsPerPage) - itemsPerPage;
-  const endIndex = (page * itemsPerPage);
+  const startIndex = (page * itemsPerPage) - itemsPerPage; //Start index of data/students for the current page
+  const endIndex = (page * itemsPerPage); //Declare end index of data/students for the current page
 
-  studentList.innerHTML = '';
+  studentList.innerHTML = ''; //Set to empty string to remove any students previously displayed
 
   //Loop over the list parameter
-  for (let i = 0; i < 9; i++) {  //TODO: replaced '6' with list.length
-    if(i >= startIndex && i < endIndex) {
+  for (let i = 0; i < list.length; i++) { //List all students from data.js
+    if (i >= startIndex && i < endIndex) {
+      //Using insertAdjacentHTML() method, dynamically add student info to index.html
+      studentList.insertAdjacentHTML('beforeend', `
+        <li class="student-item cf">
+          <div class="student-details">
+            <img class="avatar" src="${data[i].picture.large}" alt="Profile Picture">
+            <h3>${data[i].name.first} ${data[i].name.last}</h3>
+            <span class="email">${data[i].email}</span>
+          </div>
+          <div class="joined-details">
+            <span class="date">${data[i].registered.date}</span>
+          </div>
+        </li>
+      `);
 
-      // function createElement(elementName, newElement, className) { //Ex: createElement('label', 'textContent', 'Confirmed')
-      //   const element = document.createElement(newElement);
-      //   element.className = className;
-      //   return element;
-      // }
-      //
-      // function appendToElement(elementName, newElement, className) {
-      //   const element = createElement(elementName, newElement, className);
-      //   const elementItem = elementName;
-      //   elementItem.appendChild(element);
-      //   return element;
-      // }
-
-      const li = document.createElement('li');
-      li.setAttribute('class', 'student-item cf'); //setClass(li, 'class', 'student-item cf');
-      studentList.appendChild(li);
-
-      const studentDetails = document.createElement('div');
-      studentDetails.setAttribute('class', 'student-details');
-      li.appendChild(studentDetails);
-
-      const avatar = document.createElement('img');
-      avatar.setAttribute('class', 'avatar');
-      avatar.setAttribute('src', `${data[i].picture.medium}`);
-      studentDetails.appendChild(avatar);
-
-      const h3 = document.createElement('h3');
-      studentDetails.appendChild(h3);
-       h3.innerHTML = `${data[i].name.first} ${data[i].name.last}`;
-
-      const span = document.createElement('span');
-      studentDetails.appendChild(span);
-      span.innerHTML = `${data[i].email}`;
-
-      const joinedDetails = document.createElement('div');
-      joinedDetails.setAttribute('class', 'joined-details');
-      li.appendChild(joinedDetails);
-
-      const joinedDate = document.createElement('span');
-      joinedDate.setAttribute('class', 'date');
-      joinedDetails.appendChild(joinedDate);
-      joinedDate.innerHTML = `Joined ${data[i].registered.date}`;
     }
   }
 }
@@ -75,10 +45,41 @@ Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
 function addPagination(list) {
+  const buttonsNum = list.length; //declare a variable to hold value
+  const listLength = buttonsNum / itemsPerPage; //Perform, store calculation for number of buttons needed
 
+  linkList.innerHTML = ''; //Set to empty string to remove any pagination buttons previously displayed
+
+  for (let i = 0; i < listLength; i++) { //Add pagination to the app, iterating over listLength
+    //Using insertAdjacentHTML() method, dynamically add individual pages into index.html
+    linkList.insertAdjacentHTML('beforeend', `
+      <li>
+        <button type="button">${i + 1}</button>
+      </li>
+    `);
+  }
+
+  const li = linkList.firstElementChild;
+  const firstButton = li.firstElementChild;
+  firstButton.className = 'active'; //Set the first button (1) as 'active'
 }
 
-// Call functions
-showPage(data,1);
+//Event Listener to track when a button is individually clicked by the user
+linkList.addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    const activeButton = e.target;
+    const activeClass = document.querySelector('.active');
+    activeClass.classList.remove('active'); //Remove all classnames of "active"
 
-addPagination();
+    //Check to see whether the button is 'active'
+    if (activeButton.className != 'active') {
+      activeButton.className = 'active';  //if it isn't active, set it to 'active'
+      let activePage = activeButton.textContent; //See what button is being clicked
+      showPage(data, activePage); //pass values of data (data.js) and activePage to function, showPage()
+    }
+  }
+});
+
+// Call functions
+showPage(data, 1); //By default, start on first page
+addPagination(data); //Include list from data.js to calculate how many pages are required
