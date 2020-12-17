@@ -6,7 +6,6 @@ By: Matt Coale
 
 //Declare global variables
 const itemsPerPage = 9; //Define max number of students to be shown per page
-const studentList = document.querySelector('.student-list'); //assign .student-list class to a variable
 
 /*
 Create the `showPage` function
@@ -18,7 +17,7 @@ function showPage(list, page) {
 
   //const studentList = document.querySelector('.student-list'); //assign .student-list class to a variable
   studentList.innerHTML = ''; //Set studentList to empty string to remove any students previously displayed
-
+  const studentList = document.querySelector('.student-list'); //assign .student-list class to a variable
   //Loop over the list parameter
   for (let i = 0; i < list.length; i++) { //List all students from data.js
     if (i >= startIndex && i < endIndex) {
@@ -35,7 +34,6 @@ function showPage(list, page) {
           </div>
         </li>
       `);
-
     }
   }
 }
