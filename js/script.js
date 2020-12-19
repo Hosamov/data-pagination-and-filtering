@@ -57,9 +57,7 @@ function addPagination(list) {
     `);
   }
 
-  const li = linkList.firstElementChild; //get first child (li) of linkList
-  const firstButton = li.firstElementChild; //get first child (button) of li for editing
-  firstButton.className = 'active'; //Set the first button (1) as 'active' initially
+  linkList.querySelector('[type="button"]').className = 'active'; //Target first button and set className to 'active'
 
   //Event Listener to track when a button is individually clicked by the user
   linkList.addEventListener('click', (e) => {
@@ -67,8 +65,8 @@ function addPagination(list) {
       const activeButton = e.target;
       const activeClass = document.querySelector('.active');
 
-      activeClass.className = ''; //Change class of 'active' to an empty string
-      activeButton.className = 'active'; //Set the target button to 'active'
+      activeClass.className = ''; //Change button class of 'active' to an empty string
+      activeButton.className = 'active'; //Set the target button to class of 'active'
 
       let activePage = activeButton.textContent; //See what button is being clicked
       showPage(data, activePage); //pass values of data (data.js) and activePage to function, showPage()
