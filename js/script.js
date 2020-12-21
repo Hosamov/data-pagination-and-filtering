@@ -58,7 +58,7 @@ function addPagination(list) {
   }
 
   const btnType = linkList.querySelector('[type="button"]');
-  if(btnType){
+  if (btnType) {
     btnType.className = 'active';
   }
 
@@ -108,21 +108,20 @@ function searchPage(list) { //Create a function with a parameter of 'list'
 Filter Search input
 */
 function filterData(list) { //call list parameter
-  const searchInputValue = header.querySelector('#search').value.toLowerCase();  //Target input id of 'search' and convert its value to lower case
+  const searchInputValue = header.querySelector('#search').value.toLowerCase(); //Target input id of 'search' and convert its value to lower case
   let filteredList = []; //Create a new array to hold the filtered results, below
 
-  for(let i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     const fullName = `${list[i].name.first} ${list[i].name.last}`.toLowerCase(); //concatenate first and last name of students on the list and convert names to lower case
     //check to see if the full name matches any or all of the search input
-    if(fullName.includes(searchInputValue)) {
+    if (fullName.includes(searchInputValue)) {
       filteredList.push(list[i]); //add it to filteredList array
     }
   }
 
-  if (!filteredList.length) {   //Check to see if there are no matches
+  if (!filteredList.length) { //Check to see if there are no matches
     studentList.innerHTML = '<h1>No results found.</h1>'; //let the user know
   } else {
-    console.log(filteredList);
     showPage(filteredList, 1); //otherwise, send filteredList array to the showPage function
   }
   addPagination(filteredList); //Send filteredList to addPagination function to match length of the array
@@ -131,4 +130,4 @@ function filterData(list) { //call list parameter
 // Call functions
 showPage(data, 1); //By default, start on first page, showing 'data' list from beginning
 addPagination(data); //Include list from data.js to calculate how many pages are required
-searchPage(data);
+searchPage(data); //Add a search field to the page upon load
