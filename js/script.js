@@ -25,12 +25,12 @@ function showPage(list, page) {
       studentList.insertAdjacentHTML('beforeend', `
         <li class="student-item cf">
           <div class="student-details">
-            <img class="avatar" src="${data[i].picture.large}" alt="Profile Picture">
-            <h3>${data[i].name.first} ${data[i].name.last}</h3>
-            <span class="email">${data[i].email}</span>
+            <img class="avatar" src="${list[i].picture.large}" alt="Profile Picture">
+            <h3>${list[i].name.first} ${list[i].name.last}</h3>
+            <span class="email">${list[i].email}</span>
           </div>
           <div class="joined-details">
-            <span class="date">${data[i].registered.date}</span>
+            <span class="date">${list[i].registered.date}</span>
           </div>
         </li>
       `);
@@ -57,7 +57,10 @@ function addPagination(list) {
     `);
   }
 
-  linkList.querySelector('[type="button"]').className = 'active'; //Target first button and set className to 'active'
+  const btnType = linkList.querySelector('[type="button"]');
+  if(btnType){
+    btnType.className = 'active';
+  }
 
   //Event Listener to track when a button is individually clicked by the user
   linkList.addEventListener('click', (e) => {
@@ -65,15 +68,67 @@ function addPagination(list) {
       const activeButton = e.target;
       const activeClass = document.querySelector('.active');
 
-      activeClass.className = ''; //Change button class of 'active' to an empty string
-      activeButton.className = 'active'; //Set the target button to class of 'active'
+      activeClass.className = ''; //Change class of 'active' to an empty string
+      activeButton.className = 'active'; //Set the target button to 'active'
 
       let activePage = activeButton.textContent; //See what button is being clicked
-      showPage(data, activePage); //pass values of data (data.js) and activePage to function, showPage()
+      showPage(list, activePage); //pass values of data (data.js) and activePage to function, showPage()
     }
   });
+}
+
+/*
+Add a Search Bar & Submit Button
+Create a function to allow searching for specific name criteria
+*/
+const header = document.querySelector('.header'); //Target the header element for inserting HTML:
+
+function searchPage(list) { //Create a function with a parameter of 'list'
+  header.insertAdjacentHTML('beforeend', `
+    <label for="search" class="student-search">
+      <input id="search" placeholder="Search by name..." value="">
+      <button type="button" class="submit-button"><img src="img/icn-search.svg" alt="Search icon"></button>
+    </label>
+  `);
+
+  //initialize variables for event listener
+  const searchBar = header.querySelector('#search');
+  const searchBtn = header.querySelector('.submit-button');
+
+  searchBtn.addEventListener('click', (e) => { //target the search button
+    filterData(list);
+  });
+
+  searchBar.addEventListener('keyup', (e) => { //target search bar
+    filterData(list);
+  });
+}
+
+/*
+Filter Search input
+*/
+function filterData(list) { //call list parameter
+  const searchInputValue = header.querySelector('#search').value.toLowerCase();  //Target input id of 'search' and convert its value to lower case
+  let filteredList = []; //Create a new array to hold the filtered results, below
+
+  for(let i = 0; i < list.length; i++) {
+    const fullName = `${list[i].name.first} ${list[i].name.last}`.toLowerCase(); //concatenate first and last name of students on the list and convert names to lower case
+    //check to see if the full name matches any or all of the search input
+    if(fullName.includes(searchInputValue)) {
+      filteredList.push(list[i]); //add it to filteredList array
+    }
+  }
+
+  if (!filteredList.length) {   //Check to see if there are no matches
+    studentList.innerHTML = '<h1>No results found.</h1>'; //let the user know
+  } else {
+    console.log(filteredList);
+    showPage(filteredList, 1); //otherwise, send filteredList array to the showPage function
+  }
+  addPagination(filteredList); //Send filteredList to addPagination function to match length of the array
 }
 
 // Call functions
 showPage(data, 1); //By default, start on first page, showing 'data' list from beginning
 addPagination(data); //Include list from data.js to calculate how many pages are required
+searchPage(data);
